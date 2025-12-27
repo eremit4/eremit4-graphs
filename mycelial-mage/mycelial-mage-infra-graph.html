@@ -120,82 +120,80 @@
 
     <body>
 <style>
-/* Fullscreen override (PyVis sets inline width/height; we override with !important) */
-html, body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  background: #050505;
-  overflow: hidden;
-}
+/* Reset e Base */
+html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505; overflow: hidden; }
+#mynetwork { position: fixed; inset: 0; }
 
-#mynetwork {
-  width: 100vw !important;
-  height: 100vh !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-}
-
+/* ===== LEGENDA DISCRETA (COLLAPSIBLE) ===== */
 #threat-legend {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  max-width: 280px;
-  padding: 14px;
-  background: rgba(5,5,5,0.88);
-  border: 2px solid #4b0082;
-  border-radius: 6px;
-  color: #fff;
-  font-family: Courier New, monospace;
-  z-index: 10;
-}
-
-.legend-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 6px;
-}
-
-.legend-diamond {
-  width: 12px;
-  height: 12px;
-  transform: rotate(45deg);
-  display: inline-block;
-  flex: 0 0 auto;
-}
-
-@media (max-width: 900px) {
-  #threat-legend {
     position: absolute;
-    top: 10px;
-    left: 10px;
-    max-width: calc(100vw - 20px);
-  }
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+    font-family: "Courier New", monospace;
+    background: rgba(15, 15, 15, 0.9);
+    border: 1px solid #4b167d;
+    border-radius: 4px;
+    color: #bcbcbc;
+    transition: all 0.3s ease;
+    max-width: 45px; /* Fechada */
+    max-height: 35px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
+
+/* Expandir ao passar o mouse ou focar */
+#threat-legend:hover, #threat-legend:active {
+    max-width: 300px;
+    max-height: 80vh;
+    padding: 12px;
+    overflow-y: auto;
+}
+
+.legend-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    font-weight: bold;
+    color: #7c3aed;
+    white-space: nowrap;
+}
+
+/* Ícone de "Info" ou "Hambúrguer" quando fechado */
+.legend-header::before {
+    content: "ⓘ"; /* Ou '☰' */
+    font-size: 18px;
+    margin-right: 15px;
+}
+
+.legend-content { opacity: 0; transition: opacity 0.2s; }
+#threat-legend:hover .legend-content { opacity: 1; }
+
+.legend-section { font-size: 10px; color: #666; margin: 10px 0 5px; text-transform: uppercase; border-bottom: 1px solid #333; }
+.legend-item { display: flex; align-items: center; margin-bottom: 4px; font-size: 11px; white-space: nowrap; }
+.legend-hex { min-width: 10px; height: 10px; margin-right: 8px; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+.legend-dot { min-width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
+.legend-diamond { min-width: 8px; height: 8px; transform: rotate(45deg); margin-right: 8px; }
+
+/* Scrollbar fina */
+#threat-legend::-webkit-scrollbar { width: 3px; }
+#threat-legend::-webkit-scrollbar-thumb { background: #4b167d; }
 </style>
 
 <div id="threat-legend">
-  <div style="font-size:16px;color:#4b0082;
-       border-bottom:2px solid #4b0082;
-       margin-bottom:10px;">FOLLOWING CURSED ROOTS</div>
-
-  <div style="font-size:12px;color:#999;margin-bottom:8px;">INFRASTRUCTURE</div>
-  <div style='display:flex;align-items:center;margin-bottom:6px;'><div style='width:14px;height:14px;background:#764218;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);margin-right:10px;'></div>AS29119 - IONOS</div><div style='display:flex;align-items:center;margin-bottom:6px;'><div style='width:14px;height:14px;background:#5091f7;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);margin-right:10px;'></div>AS34119 - IONOS</div><div style='display:flex;align-items:center;margin-bottom:6px;'><div style='width:14px;height:14px;background:#064082;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);margin-right:10px;'></div>AS16509 - AMAZON AWS</div><div style='display:flex;align-items:center;margin-bottom:6px;'><div style='width:14px;height:14px;background:#39f45e;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);margin-right:10px;'></div>AS401605 - WEB HOST MOST</div><div style='display:flex;align-items:center;margin-bottom:6px;'><div style='width:14px;height:14px;background:#92458f;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);margin-right:10px;'></div>AS54113 - FASTLY / NETLIFY</div><div style='display:flex;align-items:center;margin-bottom:6px;'><div style='width:14px;height:14px;background:#3df54c;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);margin-right:10px;'></div>AS14618 - AMAZON AWS</div><div style='display:flex;align-items:center;margin-bottom:6px;'><div style='width:14px;height:14px;background:#822dc8;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);margin-right:10px;'></div>AS47583 - HOSTINGER</div><div style='display:flex;align-items:center;margin-bottom:6px;'><div style='width:14px;height:14px;background:#42958b;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);margin-right:10px;'></div>AS60362 - ALWAYSDATA</div><div style='display:flex;align-items:center;margin-bottom:6px;'><div style='width:14px;height:14px;background:#41a1c0;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);margin-right:10px;'></div>AS397273 - RENDER / CLOUDFLARE</div><div style='display:flex;align-items:center;margin-bottom:6px;'><div style='width:14px;height:14px;background:#a74dbf;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);margin-right:10px;'></div>AS13335 - CLOUDFLARE</div>
-
-  <div style="margin-top:10px;font-size:12px;color:#999;">EXFILTRATION</div>
-
-  <div class="legend-row">
-    <span class="legend-diamond" style="background:#ff9100;"></span>
-    <span>Telegram Token</span>
-  </div>
-
-  <div class="legend-row">
-    <span class="legend-diamond" style="background:#d500f9;"></span>
-    <span>Discord Webhook</span>
-  </div>
+    <div class="legend-header">Mycelial Mage Graph</div>
+    <div class="legend-content">
+        <div class="legend-section">Infrastructure</div>
+        <div class='legend-item'><span class='legend-hex' style='background:#764218;'></span>AS29119 - IONOS</div><div class='legend-item'><span class='legend-hex' style='background:#5091f7;'></span>AS34119 - IONOS</div><div class='legend-item'><span class='legend-hex' style='background:#064082;'></span>AS16509 - AMAZON AWS</div><div class='legend-item'><span class='legend-hex' style='background:#39f45e;'></span>AS401605 - WEB HOST MOST</div><div class='legend-item'><span class='legend-hex' style='background:#92458f;'></span>AS54113 - FASTLY / NETLIFY</div><div class='legend-item'><span class='legend-hex' style='background:#3df54c;'></span>AS14618 - AMAZON AWS</div><div class='legend-item'><span class='legend-hex' style='background:#822dc8;'></span>AS47583 - HOSTINGER</div><div class='legend-item'><span class='legend-hex' style='background:#42958b;'></span>AS60362 - ALWAYSDATA</div><div class='legend-item'><span class='legend-hex' style='background:#41a1c0;'></span>AS397273 - RENDER / CLOUDFLARE</div><div class='legend-item'><span class='legend-hex' style='background:#a74dbf;'></span>AS13335 - CLOUDFLARE</div>
+        <div class="legend-section">IPs and Domains</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#00e5ff;"></span>IP Address</div>
+        <div class="legend-item"><span class="legend-dot" style="background:#ff1744;"></span>Phishing Domain</div>
+        <div class="legend-section">Exfiltration</div>
+        <div class="legend-item"><span class="legend-diamond" style="background:#ff9100;"></span>Telegram Token</div>
+        <div class="legend-item"><span class="legend-diamond" style="background:#d500f9;"></span>Discord Webhook</div>
+    </div>
 </div>
 
         <div class="card" style="width: 100%">
